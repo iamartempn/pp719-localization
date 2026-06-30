@@ -1,0 +1,38 @@
+[
+  {
+    "patch_dir": "01",
+    "date": "2026-07-09",
+    "message": "feat: expiring entries tab — records expiring within 90 days",
+    "files": [{"src": "src/dashboard.py", "dst": "src/dashboard.py"}]
+  },
+  {
+    "patch_dir": "02",
+    "date": "2026-07-22",
+    "message": "feat: registration year time series in analysis and dashboard",
+    "files": [
+      {"src": "src/analyze.py", "dst": "src/analyze.py"},
+      {"src": "src/dashboard.py", "dst": "src/dashboard.py"}
+    ]
+  },
+  {
+    "patch_dir": "03",
+    "date": "2026-08-01",
+    "message": "feat: INN search in registry tab",
+    "files": [{"src": "src/dashboard.py", "dst": "src/dashboard.py"}]
+  },
+  {
+    "patch_dir": "04",
+    "date": "2026-08-14",
+    "message": "feat: top TN-VED categories chart",
+    "files": [
+      {"src": "src/analyze.py", "dst": "src/analyze.py"},
+      {"src": "src/dashboard.py", "dst": "src/dashboard.py"}
+    ]
+  },
+  {
+    "patch_dir": "05",
+    "date": "2026-08-27",
+    "message": "docs: scoring methodology limitations in README",
+    "files": [{"src": "README.md", "dst": "README.md"}]
+  }
+]
