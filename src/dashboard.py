@@ -66,7 +66,7 @@ def main() -> None:
     df_id = id(df)
     _df_cache[df_id] = df
 
-    tabs = st.tabs(["Реестр", "Производители", "Категории ОКПД2", "Скоринг"])
+    tabs = st.tabs(["Реестр", "Производители", "Категории ОКПД2", "Скоринг", "Истекает"])
 
     # ----- Вкладка: Реестр -----
     with tabs[0]:
@@ -226,6 +226,37 @@ def main() -> None:
         )
         fig_score.update_layout(yaxis={"categoryorder": "total ascending"})
         st.plotly_chart(fig_score, use_container_width=True)
+
+    # ----- Вкладка: Истекает -----
+    with tabs[4]:
+        st.header("Записи с истекающим сроком действия")
+
+        from datetime import date, timedelta
+        today = date.today()
+        deadline = today + timedelta(days=90)
+
+        if "срок_действия" in df.columns:
+            expiring = df.filter(
+                pl.col("срок_действия").is_not_null()
+                & (pl.col("срок_действия") >= today)
+                & (pl.col("срок_действия") <= deadline)
+            ).sort("срок_действия")
+
+            st.metric("Записей истекает в течение 90 дней", len(expiring))
+
+            if len(expiring) > 0:
+                display_cols = [c for c in
+                    ["предприятие", "инн", "наименование", "окпд2", "баллы", "срок_действия"]
+                    if c in expiring.columns]
+                st.dataframe(
+                    expiring.select(display_cols).to_pandas(),
+                    use_container_width=True,
+                    height=400,
+                )
+            else:
+                st.info("Нет записей с истекающим сроком в течение 90 дней.")
+        else:
+            st.info("Данные о сроке действия недоступны.")
 
 
 if __name__ == "__main__":
