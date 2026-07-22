@@ -141,6 +141,27 @@ def top_departments(df: pl.DataFrame, n: int = 15) -> pl.DataFrame:
     return result
 
 
+def entries_by_year(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Считает количество новых реестровых записей по году внесения.
+
+    Возвращает DataFrame с колонками: год, количество.
+    """
+    if "дата_внесения" not in df.columns:
+        return pl.DataFrame({"год": [], "количество": []})
+
+    result = (
+        df.filter(pl.col("дата_внесения").is_not_null())
+        .with_columns(
+            pl.col("дата_внесения").dt.year().alias("год")
+        )
+        .group_by("год")
+        .agg(pl.len().alias("количество"))
+        .sort("год")
+    )
+    return result
+
+
 def main() -> None:
     """Точка входа: вывод аналитических сводок в консоль."""
     parser = argparse.ArgumentParser(description="Аналитика реестра ПП 719")
@@ -170,6 +191,9 @@ def main() -> None:
 
     print("\n--- Топ-15 департаментов ---")
     print(top_departments(df))
+
+    print("\n--- Записи по годам внесения ---")
+    print(entries_by_year(df))
 
 
 if __name__ == "__main__":

@@ -66,7 +66,7 @@ def main() -> None:
     df_id = id(df)
     _df_cache[df_id] = df
 
-    tabs = st.tabs(["Реестр", "Производители", "Категории ОКПД2", "Скоринг", "Истекает"])
+    tabs = st.tabs(["Реестр", "Производители", "Категории ОКПД2", "Скоринг", "Истекает", "Динамика"])
 
     # ----- Вкладка: Реестр -----
     with tabs[0]:
@@ -257,6 +257,28 @@ def main() -> None:
                 st.info("Нет записей с истекающим сроком в течение 90 дней.")
         else:
             st.info("Данные о сроке действия недоступны.")
+
+    # ----- Вкладка: Динамика -----
+    with tabs[5]:
+        st.header("Динамика реестра по годам внесения")
+
+        from analyze import entries_by_year
+        year_df = entries_by_year(df)
+
+        if len(year_df) > 0:
+            fig_year = px.line(
+                year_df.to_pandas(),
+                x="год",
+                y="количество",
+                title="Число новых записей по году внесения в реестр",
+                labels={"год": "Год", "количество": "Число записей"},
+                markers=True,
+            )
+            fig_year.update_layout(height=400)
+            st.plotly_chart(fig_year, use_container_width=True)
+            st.dataframe(year_df.to_pandas(), use_container_width=True, hide_index=True)
+        else:
+            st.info("Данные о дате внесения недоступны.")
 
 
 if __name__ == "__main__":
