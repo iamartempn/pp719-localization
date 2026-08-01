@@ -87,6 +87,8 @@ def main() -> None:
 
             предприятие_поиск = st.text_input("Поиск по предприятию", value="")
 
+            инн_поиск = st.text_input("Поиск по ИНН (точное совпадение)", value="", key="inn_search")
+
             баллы_min = 0.0
             баллы_max = float(df["баллы"].drop_nulls().max() or 3000)
             баллы_range = st.slider(
@@ -108,6 +110,9 @@ def main() -> None:
                 .str.to_lowercase()
                 .str.contains(предприятие_поиск.lower())
             )
+
+        if инн_поиск:
+            filtered = filtered.filter(pl.col("инн") == инн_поиск.strip())
 
         filtered = filtered.filter(
             (pl.col("баллы").is_null())
